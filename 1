@@ -1,0 +1,106 @@
+getgenv().cham = false
+getgenv().nameESP = false
+getgenv().boxESP = false
+getgenv().esp_loaded = false
+getgenv().Visibility = false
+
+getgenv().LibTheme = {
+    MainColor = Color3.fromRGB(35,35,40),
+    BrighterMainColor = Color3.fromRGB(40,40,45),
+    IconsColor = Color3.fromRGB(100,100,120),
+    Accent = Color3.fromRGB(0,100,255),
+    DarkText = Color3.fromRGB(170,170,170),
+    BrightText = Color3.fromRGB(145,145,145),
+    Font = "Gotham",
+    SoundVolume = 0.5,
+    HideKey = "LeftAlt"
+}
+
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/JustAP1ayer/ASalfinUiBackup-/main/OcerLibBACKUP.lua"))()
+
+local Main = Library.Main("مركز اللاعب")
+local Page = Main.Page("مهم", "3926305904", Vector2.new(924, 204), Vector2.new(36, 36))
+
+local Section = Page.Section("معلومات مهمة")
+
+Section.Component("Button", "نسخ رابط الديسكورد للدعم الفني", function()
+    setclipboard("https://discord.gg/nXERxPYUyZ")
+end)
+
+Section.Component("Button", "اضغط 'LeftAlt' لإخفاء الواجهة", function() end)
+Section.Component("Button", "استخدام عجلة الماوس للتنقل بين الصفحات", function() end)
+Section.Component("Button", "دعمنا عبر CashApp: $JustAPlayer", function() end)
+
+local Page = Main.Page("الخصائص الرئيسية", "3926305904", Vector2.new(924, 204), Vector2.new(36, 36))
+local Section = Page.Section("التشغيل التلقائي")
+
+local autofarmdelay = 0.05
+
+Section.Component("Slider2", "تأخير الزراعة التلقائية", 0, 1, true, function(value)
+    autofarmdelay = value
+end, autofarmdelay)
+
+Section.Component("Toggle", "تفعيل الزراعة التلقائية للأحجار/النقاط", function(bool)
+    _G.AutofarmWinnerGems = bool
+    while _G.AutofarmWinnerGems do
+        game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(0, -8, -999999)
+        game:GetService("ReplicatedStorage")._replicationFolder.RoundSystemConstants.MapFinished:FireServer()
+        wait(autofarmdelay)
+    end
+end, false)
+
+Section.Component("Toggle", "تفعيل إعادة الولادة التلقائية", function(bool)
+    _G.Autorebirth = bool
+    while _G.Autorebirth do
+        game:GetService("ReplicatedStorage").RemoteEvents.Rebirth:FireServer()
+        wait(1)
+    end
+end, false)
+
+Section.Component("Toggle", "تفعيل النقر التلقائي", function(bool)
+    _G.AutoClicker = bool
+    while _G.AutoClicker do
+        local ClickRemote = game:GetService("ReplicatedStorage").RemoteFunctions.ClickingRemote
+        ClickRemote:InvokeServer()
+        ClickRemote:InvokeServer()
+        ClickRemote:InvokeServer()
+        wait(0.014)
+    end
+end, false)
+
+local Page = Main.Page("الانتقالات", "3926305904", Vector2.new(924, 204), Vector2.new(36, 36))
+local Section = Page.Section("الانتقال الفوري")
+
+Section.Component("Button", "إنهاء الأوبي", function()
+    local position = game:GetService("Workspace").Obby.EggObby.EggArrowBeam.Part1.CFrame
+    game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = position + Vector3.new(0, 4, 0)
+end)
+
+Section.Component("Button", "الانتقال إلى نقطة البداية", function()
+    local spawnCFrame = CFrame.new(3.47, 2.99, -6.69)
+    game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = spawnCFrame + Vector3.new(0, 4, 0)
+end)
+
+local Page = Main.Page("اللاعب المحلي", "3926305904", Vector2.new(924, 204), Vector2.new(36, 36))
+local Section = Page.Section("تعديل اللاعب")
+
+Section.Component("Slider2", "سرعة المشي", 0, 250, false, function(value)
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = value
+end, 18)
+
+Section.Component("Slider2", "قوة القفز", 0, 300, false, function(value)
+    game.Players.LocalPlayer.Character.Humanoid.JumpPower = value
+end, 50)
+
+Section.Component("Slider2", "الجاذبية", 0, 333, true, function(value)
+    game:GetService("Workspace").Gravity = value
+end, 196.2)
+
+Section.Component("Toggle", "القفز اللانهائي", function(bool)
+    InfiniteJump = bool
+    game:GetService("UserInputService").JumpRequest:Connect(function()
+        if InfiniteJump then
+            game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
+        end
+    end)
+end, false)
